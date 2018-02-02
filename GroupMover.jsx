@@ -352,7 +352,7 @@ var GroupMover = {
 /*
 #target indesign
 function test(){
-	#include "/Users/VasilyHall/Google Drive/Script Work/Administrative/Templates/Library - Indesign/GroupMover.jsx"
+	#include "GroupMover.jsx"
 	var doc = app.activeDocument;
 	GroupMover.addToGroup(
 		GroupMover.getAnyItemByName(doc, "Sibling"),
