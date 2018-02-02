@@ -101,8 +101,8 @@ var GroupMover = {
 		} else {
 			allPageItems = [];
 			var thisMasterSpreadItem, thisMasterSpreadItemLayerName, targetLayerName = targetLayer.name;
-		  for(var i = 0; i < container.pageItems.length; i++){
-		  	thisMasterSpreadItem = container.pageItems[i];
+		  for(var i = 0; i < container.allPageItems.length; i++){
+		  	thisMasterSpreadItem = container.allPageItems[i];
 		  	thisMasterSpreadItemLayerName = thisMasterSpreadItem.itemLayer.name;
 		    if(thisMasterSpreadItemLayerName == targetLayerName){
 		  		allPageItems.push(thisMasterSpreadItem);
@@ -166,10 +166,10 @@ var GroupMover = {
 			if(typeof adjacentItem != "undefined"){
 				adjacentItemId = adjacentItem.id;
 			}
+			// $.writeln("Adjacent Id: " + adjacentItemId + ", Static Id: " + staticId);
 			if(adjacentItemId != staticId){
 				dynamicDocItem[method.moveFuncName]();
 			}
-			// $.writeln(adjacentItemId);
 		}
 		return true;
 	},
@@ -294,6 +294,7 @@ var GroupMover = {
 		app.pasteInPlace();
 		addedObject = doc.selection[0];
 		var originalGroupId = groupItem.id;
+
 		var relativeObjectId = relativeObject.id, addedObjectId = addedObject.id;
 
 		var thisLayerId = groupItem.itemLayer.id;
@@ -317,6 +318,7 @@ var GroupMover = {
 		var customAddedObj = this.getByIdFromCollection(orderedItems, addedObjectId);
 		var relativeObjZOrder = customRelativeObj.zOrder;
 		var addedObjZOrder = customAddedObj.zOrder;
+
 		this.moveInStackingOrderRelative(customRelativeObj, customAddedObj, placementOptions, container);
 		this.reconstructGroup(structure, relativeObject, addedObject, placementOptions, container);
 		return addedObject;
@@ -339,9 +341,26 @@ var GroupMover = {
 		if(typeof container == "undefined"){
 			container = doc;
 		}
+		var relativeObjectId = relativeObject.id;
 		var containerGroup = container.groups.add(foundItems);
-		var addedItemGroup = this.addToGroup(groupItem, containerGroup, relativeObject, placementOptions, container);
+		var addedItemGroup = this.addToGroup(groupItem, containerGroup, this.getAnyItemById(container, relativeObjectId), placementOptions, container);
 		addedItemGroup.ungroup();
 		return true;
 	}
 };
+
+/*
+#target indesign
+function test(){
+	#include "/Users/VasilyHall/Google Drive/Script Work/Administrative/Templates/Library - Indesign/GroupMover.jsx"
+	var doc = app.activeDocument;
+	GroupMover.addToGroup(
+		GroupMover.getAnyItemByName(doc, "Sibling"),
+		GroupMover.getAnyItemByName(doc, "MyGroup"),
+		GroupMover.getAnyItemByName(doc, "Sibling").pageItems[0],
+		// getAnyItemByName(doc, "First square in Nested"),
+		GroupMover.ElementPlacement.PLACEBEFORE
+	);
+};
+test();
+*/
